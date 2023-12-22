@@ -4,7 +4,7 @@ import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Student from './Student/Student';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import './css/styles.css'; // Import your custom styles
+import './Css/styles.css'; // Import your custom styles
 
 const studentData = [
   { id: 1, name: 'Trần Thị Kiều Oanh', image: 'https://thcshoxuanhuong.vn/wp-content/uploads/2021/07/49226227333_226c5ceb0d_c.jpg', email: 'kieuoanh1610@gmail.com' },

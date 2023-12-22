@@ -1,6 +1,7 @@
 // PlanCard.js · - Reusable component for each pricing plan 
 import React from 'react';
-const PlanCard = ({planName, description, features, price }) => {
+
+const PlanCard = ({ planName, description, features, price }) => {
   return (
    <div className="card h-100 shadow-lg">
     <div className="card-body">

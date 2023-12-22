@@ -17,7 +17,7 @@ function withStyles(Component){
         ...props.style,
     };
     return <Component {...props} style={style} />;
-};
+ };
 }
 
 function Welcome({myName}){
