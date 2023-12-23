@@ -1,4 +1,4 @@
-// Student.js (Thêm tính năng bổ sung)
+// Student.js
 
 import React, { useState } from 'react';
 
