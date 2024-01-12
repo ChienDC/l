@@ -1,119 +1,84 @@
-import { useState } from 'react';
-import React from 'react'; 
-import './css/caro.css';
+-- Tạo bảng KhachHang
+CREATE TABLE KhachHang (
+    MaKhachHang INT PRIMARY KEY,
+    TenKhachHang NVARCHAR(255)
+);
 
-function Square({value, onSquareClick}) { 
-   return (
-    <button className="square" onClick={onSquareClick}>
-      {value}
-    </button>
- );
-}
+-- Tạo bảng SanPham
+CREATE TABLE SanPham (
+    MaSanPham INT PRIMARY KEY,
+    TenSanPham NVARCHAR(255),
+    MoTa NVARCHAR(255),
+    DonVi NVARCHAR(50),
+    Gia INT
+);
 
-function Board({ xIsNext, squares, onPlay }) { 
-    function handleClick(i) {
-      if (calculateWinner (squares) || squares[i]) {
-         return;
-      }
-      const nextSquares = squares.slice();
-      if (xIsNext) {
-         nextSquares [i] = 'X';
-      } else {
-         nextSquares [i] = '0';
-      }
-      onPlay(nextSquares);
-    }
+-- Tạo bảng DonDatHang
+CREATE TABLE DonDatHang (
+    MaDonHang INT PRIMARY KEY,
+    MaKhachHang INT,
+    NgayDat DATE,
+    FOREIGN KEY (MaKhachHang) REFERENCES KhachHang(MaKhachHang)
+);
 
-    const winner = calculateWinner (squares);
-    let status;
-    if (winner) {
-       status = 'Winner: ' + winner;
-    } else {
-      status = 'Next player: ' + (xIsNext ? 'X': '0');
-    }
+-- Tạo bảng ChiTietDonDatHang
+CREATE TABLE ChiTietDonDatHang (
+    MaDonHang INT,
+    MaSanPham INT,
+    SoLuong INT,
+    ThanhTien INT,
+    PRIMARY KEY (MaDonHang, MaSanPham),
+    FOREIGN KEY (MaDonHang) REFERENCES DonDatHang(MaDonHang),
+    FOREIGN KEY (MaSanPham) REFERENCES SanPham(MaSanPham)
+);
 
-    return (
-        <>
-           <div className="status">{status}</div>
-           <div className="board-row">
-             <Square value={squares [0]} onSquareClick={() => handleClick(0)} /> 
-             <Square value={squares [1]} onSquareClick={() => handleClick(1)} /> 
-             <Square value={squares [2]} onSquareClick={() => handleClick(2)} /> 
-           </div>
-           <div className="board-row">
-             <Square value={squares [3]} onSquareClick={() => handleClick(3)} />
-             <Square value={squares [4]} onSquareClick={() => handleClick(4)} />
-             <Square value={squares [5]} onSquareClick={() => handleClick(5)} />
-           </div>
-           <div className="board-row">
-             <Square value={squares [6]} onSquareClick={() => handleClick(6)} />
-             <Square value={squares [7]} onSquareClick={() => handleClick(7)} />
-             <Square value={squares [8]} onSquareClick={() => handleClick(8)} /> 
-            </div>
-          </>
-    );
-}
 
-export default function Game() {
-  const [xIsNext, setXIsNext] = useState(true);
-  const [history, setHistory] = useState([Array(9).fill(null)]); 
-  const [currentMove, setCurrentMove] = useState(0);
-  const currentSquares = history [currentMove];
+-- Thêm dữ liệu vào bảng KhachHang
+INSERT INTO KhachHang (MaKhachHang, TenKhachHang)
+VALUES
+(1, 'Nguyen Van An'),
+(2, 'Tran Thi Binh');
 
-  function handlePlay(nextSquares) {
-     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares]; 
-     setHistory (nextHistory);
-     setCurrentMove (nextHistory.length - 1);
-     setXIsNext(!xIsNext);
-  }
+-- Thêm dữ liệu vào bảng SanPham
+INSERT INTO SanPham (MaSanPham, TenSanPham, MoTa, DonVi, Gia)
+VALUES
+(1, 'Máy Tính T450', 'Máy nhập mới', 'Chiếc', 1000),
+(2, 'Điện Thoại Nokia5670', 'Điện thoại đang hot', 'Chiếc', 200),
+(3, 'Máy In Samsung 450', 'Máy in đang ế', 'Chiếc', 100);
 
-  function jumpTo(nextMove) {
-    setCurrentMove (nextMove);
-    setXIsNext(nextMove % 2 === 0);
-  }
+-- Thêm dữ liệu vào bảng DonDatHang và ChiTietDonDatHang
+INSERT INTO DonDatHang (MaDonHang, MaKhachHang, NgayDat)
+VALUES
+(101, 1, '2023-10-30'),
+(102, 2, '2023-10-29');
 
-  const moves = history.map((squares, move) => {
-    let description;
-    if (move > 0) {
-       description = 'Go to move #' + move;
-    } else {
-      description = 'Go to game start';
-    }
-    return (
-      <li key={move}>
-         <button onClick={() => jumpTo(move)}>{description}</button>
-      </li>
-    );
- });
+INSERT INTO ChiTietDonDatHang (MaDonHang, MaSanPham, SoLuong, ThanhTien)
+VALUES
+(101, 1, 1, 1000),
+(102, 2, 2, 400);
 
-  return (
-    <div className="game">
-      <div className="game-board">
-         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
-      </div>
-      <div className="game-info">
-         <ol>{moves}</ol>
-      </div>
-      </div>
-    );
-   }
 
-   function calculateWinner (squares) {
-      const lines = [
-         [0, 1, 2],
-         [3, 4, 5],
-         [6, 7, 8],
-         [0, 3, 6],
-         [1, 4, 7],
-         [2, 5, 8],
-         [0, 4, 8],
-         [2, 4, 6],
-      ];
-      for (let i = 0; i < lines.length; i++) {
-         const [a, b, c] = lines[i];
-         if (squares[a] && squares[a] === squares [b] && squares [a] === squares [c]) {
-            return squares [a];
-        }
-      }
-      return null;
-}
+SELECT KhachHang.*
+FROM KhachHang
+JOIN DonDatHang ON KhachHang.MaKhachHang = DonDatHang.MaKhachHang;
+
+SELECT *
+FROM SanPham;
+
+SELECT *
+FROM DonDatHang;
+
+SELECT *
+FROM KhachHang
+ORDER BY TenKhachHang;
+
+SELECT *
+FROM SanPham
+ORDER BY Gia DESC;
+
+SELECT SanPham.*
+FROM SanPham
+JOIN ChiTietDonDatHang ON SanPham.MaSanPham = ChiTietDonDatHang.MaSanPham
+JOIN DonDatHang ON ChiTietDonDatHang.MaDonHang = DonDatHang.MaDonHang
+JOIN KhachHang ON DonDatHang.MaKhachHang = KhachHang.MaKhachHang
+WHERE KhachHang.TenKhachHang = 'Nguyen Van An';
