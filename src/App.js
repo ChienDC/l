@@ -1,6 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
-
+import ClassComponent from './components/ClassComponents';
+import PropsDemo from './components/PropsDemo';
+import StateDemo from './components/StateDemo';
+import { BrowserRouter as Router,
+  Link, Route, Routes } from 'react-router-dom';
 function App() {
   return (
     <div className="App">
@@ -23,3 +27,8 @@ function App() {
 }
 
 export default App;
+
+function App(){
+  // name : Nguyen Van A
+  // age : 18
+}
